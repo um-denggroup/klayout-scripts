@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category/>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>ruby</interpreter>
+ <dsl-interpreter-name/>
+ <text>module MyMacro
+ 
+  include RBA
+  view = RBA::Application.instance.main_window.current_view
+  cv = RBA::CellView::active
+  sp = RBA::ShapeProcessor::new
+  layout = cv.layout
+  cell = cv.cell
+  
+  ly1 = cv.layout.layer(1, 0)
+  ly2 = cv.layout.layer(2, 0)
+  ly3 = cv.layout.layer(3, 0)
+  # Enter your Ruby code here ..
+  n = 100    # number of points
+  R = 6000 # radius of grating (nm)
+  D = 1000 # radius of defect
+  d = 336 # period
+  gth = 150 # grating thickness
+  count = (R-D)/d
+  
+  da = 2 * Math::PI / n
+  
+  count.times{ |j|
+  r1 = D+d*(j)
+  r2 = r1-gth
+  ln = j+4
+  if layout.is_valid_layer?(ln)
+  ly=cv.layout.layer(ln,0)
+  else
+  ly = layout.insert_layer(RBA::LayerInfo::new(ln, 0))
+  end
+  pts1 = n.times.collect { |i| RBA::Point.new(r1 * Math::cos(i * da), r1 * Math::sin(i * da)) }
+  pts2 = n.times.collect { |i| RBA::Point.new(r2 * Math::cos(i * da), r2 * Math::sin(i * da)) }
+  poly1 = RBA::Polygon::new(pts1)
+  poly2 = RBA::Polygon::new(pts2)
+  #  ly.insert(poly)
+  cv.cell.shapes(ly1).insert(poly1)
+  cv.cell.shapes(ly2).insert(poly2)  
+  sp.boolean(layout, cell, ly1, layout, cell, ly2, cell.shapes(ly),
+  EdgeProcessor::mode_anotb, true, true, true)
+
+  }
+  pts = n.times.collect { |i| RBA::Point.new(D * Math::cos(i * da), D * Math::sin(i * da)) }
+  poly = RBA::Polygon::new(pts)
+  cv.cell.shapes(ly3).insert(poly)  
+
+  RBA::Application.instance.main_window.cm_lv_add_missing
+  view.update_content
+  
+end
+</text>
+</klayout-macro>

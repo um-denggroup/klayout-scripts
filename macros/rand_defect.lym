@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category/>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>ruby</interpreter>
+ <dsl-interpreter-name/>
+ <text>module MyMacro
+ 
+  include RBA
+
+  # Enter your Ruby code here ..
+  # create a new view (mode 1) with an empty layout
+  # main_window = RBA::Application::instance.main_window
+  cv = RBA::CellView::active
+# set the database unit (shown as an example, the default is 0.001)
+# layout.dbu = 0.001
+  sc = 1000;
+  X = 8*sc;
+  Y = 15*sc;
+  Xoff = 0*sc;
+  Yoff = -7*sc;
+  count = 50;
+  ly_ind = 2;
+  count.times { |i|
+  x = X*rand()+Xoff;
+  y = Y*rand()+Yoff;
+   
+  cv.cell.shapes(cv.layout.layer(2, 0)).insert(RBA::Box::new(x, y, x+500, y+500))
+  }
+  
+  
+#  cv.select_cell(cell.cell_index, 0)
+#  cv.add_missing_layers
+#  cv.zoom_fit
+
+end
+</text>
+</klayout-macro>
