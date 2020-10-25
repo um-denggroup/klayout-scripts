@@ -1,6 +1,6 @@
 import pya
 
-def create(ly, li, text, mag, flatten=False):
+def create(ly, li, text, mag, bias=0, flatten=False):
     """Add text.
 
     ly:         Layout object
@@ -24,7 +24,8 @@ def create(ly, li, text, mag, flatten=False):
     param = { 
         "text": text, 
         "layer": ly.get_info(li),  # target layer of the text
-        "mag": mag 
+        "mag": mag,
+        "bias": bias
     }
     
     # translate to array (to pv)
